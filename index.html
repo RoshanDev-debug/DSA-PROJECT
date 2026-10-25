@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ArrayX – Interactive Array Visualizer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="brand">
+      <!-- Small logo: four coloured cells, like a tiny array -->
+      <div class="logo" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <div>
+        <h1>ArrayX</h1>
+        <p class="subtitle">Interactive Array Visualizer</p>
+      </div>
+    </div>
+    <p class="tagline">Insert, delete, update and search an array, one step at a time.</p>
+  </header>
+
+  <main class="dashboard">
+
+    <!-- 1. The array, drawn as cells -->
+    <section class="card viz" aria-labelledby="viz-title">
+      <div class="card-head">
+        <div>
+          <h2 id="viz-title">Array</h2>
+          <p class="muted">Each box holds a value. The number below it is its index.</p>
+        </div>
+        <span class="chip" id="length-chip"></span>
+      </div>
+
+      <div id="array" class="array" role="list" aria-label="Array elements"></div>
+      <p id="empty-note" class="empty-note" hidden>The array is empty. Insert a value at index 0 to start.</p>
+
+      <p id="array-text" class="array-text"></p>
+      <p id="step" class="step"></p>
+    </section>
+
+    <!-- 2. Explanation + time complexity of the current operation -->
+    <section class="card info" aria-labelledby="info-title">
+      <h2 id="info-title">Current operation</h2>
+      <p class="op-name" id="op-name"></p>
+      <p id="op-text"></p>
+      <dl class="complexity">
+        <div>
+          <dt>Time complexity (worst case)</dt>
+          <dd id="op-time"></dd>
+        </div>
+        <div>
+          <dt>This run</dt>
+          <dd id="op-detail"></dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- 3. Controls: one small form per operation (Enter key works too) -->
+    <section class="card controls" aria-labelledby="controls-title">
+      <h2 id="controls-title">Operations</h2>
+
+      <div class="ops">
+        <form class="op op-insert" data-op="insert" novalidate>
+          <h3>Insert</h3>
+          <div class="fields">
+            <label>Value
+              <input id="insert-value" type="number" placeholder="e.g. 25">
+            </label>
+            <label>Index <span class="hint" data-hint="insert"></span>
+              <input id="insert-index" type="number" placeholder="e.g. 2">
+            </label>
+          </div>
+          <button type="submit" class="btn btn-blue">Insert</button>
+        </form>
+
+        <form class="op op-delete" data-op="delete" novalidate>
+          <h3>Delete</h3>
+          <div class="fields">
+            <label>Index <span class="hint" data-hint="other"></span>
+              <input id="delete-index" type="number" placeholder="e.g. 1">
+            </label>
+          </div>
+          <button type="submit" class="btn btn-rose">Delete</button>
+        </form>
+
+        <form class="op op-update" data-op="update" novalidate>
+          <h3>Update</h3>
+          <div class="fields">
+            <label>New value
+              <input id="update-value" type="number" placeholder="e.g. 99">
+            </label>
+            <label>Index <span class="hint" data-hint="other"></span>
+              <input id="update-index" type="number" placeholder="e.g. 3">
+            </label>
+          </div>
+          <button type="submit" class="btn btn-purple">Update</button>
+        </form>
+
+        <form class="op op-search" data-op="search" novalidate>
+          <h3>Linear search</h3>
+          <div class="fields">
+            <label>Target value
+              <input id="search-value" type="number" placeholder="e.g. 30">
+            </label>
+          </div>
+          <button type="submit" class="btn btn-green">Search</button>
+        </form>
+      </div>
+
+      <button type="button" id="reset-btn" class="btn btn-outline">Reset array</button>
+    </section>
+
+    <!-- 4. Project information -->
+    <section class="card about" aria-labelledby="about-title">
+      <h2 id="about-title">About this project</h2>
+      <div class="about-grid">
+        <article>
+          <h3>What is an array?</h3>
+          <p>An array stores elements one after another in memory. Every element has an index that starts at 0, so any element can be reached directly by its index.</p>
+          <p>ArrayX keeps a real JavaScript array and runs every operation on it. The boxes on screen are redrawn from that array after each step.</p>
+        </article>
+
+        <article>
+          <h3>DSA concepts demonstrated</h3>
+          <ul>
+            <li>Zero-based indexing and direct access</li>
+            <li>Insertion by shifting elements to the right</li>
+            <li>Deletion by shifting elements to the left</li>
+            <li>Updating an element in place</li>
+            <li>Linear (sequential) search</li>
+            <li>Best-case and worst-case time complexity</li>
+          </ul>
+        </article>
+
+        <article>
+          <h3>Time complexity</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Operation</th><th>Best</th><th>Worst</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Access / update by index</td><td>O(1)</td><td>O(1)</td></tr>
+                <tr><td>Insert at index</td><td>O(1) at the end</td><td>O(n) at index 0</td></tr>
+                <tr><td>Delete at index</td><td>O(1) last element</td><td>O(n) at index 0</td></tr>
+                <tr><td>Linear search</td><td>O(1) first element</td><td>O(n)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">ArrayX – a DSA mini project built with HTML, CSS and JavaScript.</footer>
+
+  <!-- Messages (errors and confirmations) appear here -->
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
